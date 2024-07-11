@@ -1,23 +1,32 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { TodoFormComponent } from './ui/todo-form.component';
 import { Todo } from '../shared/interfaces/todo';
 import { ListTodosComponent } from './ui/list-todos.component';
+import { TodoService } from '../shared/services/todo.service';
 
 @Component({
   standalone: true,
   selector: 'app-home',
   template: `
-    <h2>Todo</h2>
-    <app-todo-form (onAdd)="addTodo($event)"></app-todo-form>
-    <app-list-todo [todos]="listTodos" />
+    <h2 class="title">Todo</h2>
+    <div class="container">
+      <app-todo-form></app-todo-form>
+      <app-list-todo [todos]="todos" />
+    </div>
   `,
   imports: [TodoFormComponent, ListTodosComponent],
+  styles: `
+    .title {
+      text-align: center;
+    }
+    .container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+  `,
 })
 export class HomeComponent {
-  listTodos: Todo[] = [];
-
-  addTodo(todo: Todo) {
-    this.listTodos.push({ ...todo });
-    console.log(todo);
-  }
+  private todoService = inject(TodoService);
+  todos = this.todoService.getAllTodos();
 }

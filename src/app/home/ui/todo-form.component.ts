@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, Output, inject } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Todo } from '../../shared/interfaces/todo';
-import { IdCountService } from '../../shared/services/id-count.service';
+import { TodoService } from '../../shared/services/todo.service';
 
 @Component({
   standalone: true,
@@ -34,7 +34,6 @@ import { IdCountService } from '../../shared/services/id-count.service';
 
     form {
       display: flex;
-      flex-direction: column;
       gap: 10px;
     }
 
@@ -63,10 +62,10 @@ import { IdCountService } from '../../shared/services/id-count.service';
 export class TodoFormComponent {
   warning = false;
   @Output() onAdd = new EventEmitter<Todo>();
-  private id = inject(IdCountService);
+  private ts = inject(TodoService);
   private fb = inject(FormBuilder);
   newTodo: Todo = {
-    id: this.id.getId(),
+    id: this.ts.getId(),
     title: '',
     description: '',
   };
@@ -78,11 +77,11 @@ export class TodoFormComponent {
 
   addTodo() {
     if (this.myForm.valid) {
-      this.newTodo.id = this.id.getId();
+      this.newTodo.id = this.ts.getId();
       this.newTodo.title = this.myForm.value.title;
       this.newTodo.description = this.myForm.value.description;
-      this.onAdd.emit(this.newTodo);
-      this.id.addId();
+      this.ts.addTodo({ ...this.newTodo });
+      this.ts.addId();
       this.warning = false;
       this.myForm.reset();
     } else {
