@@ -2,29 +2,22 @@
 // that can be provided to all components
 
 import { Injectable } from '@angular/core';
-import { Todo } from '../interfaces/todo';
+import { CreateTodo, Todo } from '../interfaces/todo';
 
 @Injectable({
   providedIn: 'root',
 })
 export class TodoService {
-  Todos: Todo[] = [];
-  id = 0;
+  #todos: Todo[] = [];
   constructor() {}
-  getId() {
-    return this.id;
-  }
-  addId() {
-    this.id++;
-  }
-  getTodos(todoId: number): Todo | undefined {
-    const todo = this.Todos.filter((todo) => todo.id == todoId);
+  getTodos(todoId: string): Todo | undefined {
+    const todo = this.#todos.filter((todo) => todo.id == todoId);
     return todo[0];
   }
-  addTodo(todo: Todo) {
-    this.Todos.push(todo);
+  addTodo(todo: CreateTodo) {
+    this.#todos.push({ ...todo, id: crypto.randomUUID() });
   }
   getAllTodos() {
-    return this.Todos;
+    return this.#todos;
   }
 }

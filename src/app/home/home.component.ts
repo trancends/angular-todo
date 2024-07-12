@@ -10,7 +10,7 @@ import { TodoService } from '../shared/services/todo.service';
   template: `
     <h2 class="title">Todo</h2>
     <div class="container">
-      <app-todo-form></app-todo-form>
+      <app-todo-form (onAdd)="todoService.addTodo($event)" />
       <app-list-todo [todos]="todos" />
     </div>
   `,
@@ -27,6 +27,6 @@ import { TodoService } from '../shared/services/todo.service';
   `,
 })
 export class HomeComponent {
-  private todoService = inject(TodoService);
+  public todoService = inject(TodoService);
   todos = this.todoService.getAllTodos();
 }

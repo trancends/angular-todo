@@ -1,14 +1,13 @@
 import { Component, EventEmitter, Input, Output, inject } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Todo } from '../../shared/interfaces/todo';
-import { TodoService } from '../../shared/services/todo.service';
+import { CreateTodo, Todo } from '../../shared/interfaces/todo';
 
 @Component({
   standalone: true,
   selector: 'app-todo-form',
   template: `
-    <form [formGroup]="myForm" (ngSubmit)="addTodo()">
-      @if (warning) {
+    <form [formGroup]="myForm" (ngSubmit)="onAdd.emit(myForm.getRawValue())">
+      @if (!myForm.valid) {
         <div class="warning">all field required</div>
       }
       <input type="text" formControlName="title" placeholder="title..." />
@@ -17,7 +16,7 @@ import { TodoService } from '../../shared/services/todo.service';
         formControlName="description"
         placeholder="description..."
       />
-      <button type="submit">Add Todo</button>
+      <button type="submit" [disabled]="!myForm.valid">Add Todo</button>
     </form>
   `,
   imports: [ReactiveFormsModule],
@@ -57,35 +56,18 @@ import { TodoService } from '../../shared/services/todo.service';
       background-color: white;
       color: black;
     }
+    button[disabled] {
+      background-color: grey;
+      color: white;
+    }
   `,
 })
 export class TodoFormComponent {
-  warning = false;
-  @Output() onAdd = new EventEmitter<Todo>();
-  private ts = inject(TodoService);
+  @Output() onAdd = new EventEmitter<CreateTodo>();
   private fb = inject(FormBuilder);
-  newTodo: Todo = {
-    id: this.ts.getId(),
-    title: '',
-    description: '',
-  };
 
-  myForm = this.fb.group({
+  myForm = this.fb.nonNullable.group({
     title: ['', Validators.required],
     description: ['', Validators.required],
   });
-
-  addTodo() {
-    if (this.myForm.valid) {
-      this.newTodo.id = this.ts.getId();
-      this.newTodo.title = this.myForm.value.title;
-      this.newTodo.description = this.myForm.value.description;
-      this.ts.addTodo({ ...this.newTodo });
-      this.ts.addId();
-      this.warning = false;
-      this.myForm.reset();
-    } else {
-      this.warning = true;
-    }
-  }
 }
