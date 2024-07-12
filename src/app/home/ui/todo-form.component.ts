@@ -7,9 +7,6 @@ import { CreateTodo, Todo } from '../../shared/interfaces/todo';
   selector: 'app-todo-form',
   template: `
     <form [formGroup]="myForm" (ngSubmit)="onAdd.emit(myForm.getRawValue())">
-      @if (!myForm.valid) {
-        <div class="warning">all field required</div>
-      }
       <input type="text" formControlName="title" placeholder="title..." />
       <input
         type="text"
@@ -23,12 +20,6 @@ import { CreateTodo, Todo } from '../../shared/interfaces/todo';
   styles: `
     :host * {
       box-sizing: border-box;
-    }
-    .warning {
-      width: 200px;
-      background-color: maroon;
-      color: white;
-      padding: 5px;
     }
 
     form {
