@@ -16,6 +16,9 @@ import { TodoService } from '../shared/services/todo.service';
   `,
   imports: [TodoFormComponent, ListTodosComponent],
   styles: `
+    :host {
+      font-family: Arial, Helvetica, sans-serif;
+    }
     .title {
       text-align: center;
     }

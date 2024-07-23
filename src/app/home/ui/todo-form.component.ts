@@ -60,5 +60,6 @@ export class TodoFormComponent {
   myForm = this.fb.nonNullable.group({
     title: ['', Validators.required],
     description: ['', Validators.required],
+    completed: [false],
   });
 }
